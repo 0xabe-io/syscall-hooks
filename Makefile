@@ -1,5 +1,5 @@
 TARGET = hook
-hook-objs := hook_example.o
+hook-objs := hook_cdev.o hook_example.o
 obj-m += $(TARGET).o
 
 .PHONY: all clean

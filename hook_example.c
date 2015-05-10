@@ -3,6 +3,7 @@
  * Tested on Ubuntu 14.04 with a 3.13 kernel
  */
 #include "hook_example.h"
+#include "hook_cdev.h"
 #include <linux/module.h>   /* Needed by all modules */
 #include <asm/cacheflush.h> /* Needed by set_memory_rw */
 #include <linux/syscalls.h> /* define the syscall funtions */
@@ -19,6 +20,7 @@ MODULE_LICENSE("GPL");
 /* global variable that will hold the address of the sys_call_table */
 void **syscall_table;
 
+struct device * hook_cdev_device;
 /*
  * @desc find the address of sys_call_table
  * @param void
@@ -106,6 +108,7 @@ static int __init syscall_init(void)
     /* restore the Write-Protect bit */
     write_cr0(cr0);
 
+    hook_cdev_create(hook_cdev_device);
     return 0;
 }
 
@@ -118,6 +121,7 @@ static void __exit syscall_release(void)
 {
     unsigned long cr0;
  
+    hook_cdev_destroy();
     /* get the value of the CR0 register */
     cr0 = read_cr0();
     /* disable the Write-Protect bit */
